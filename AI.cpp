@@ -9,17 +9,11 @@ void AI::setAllPossibleMoves(){
 	vector <Pos> figuresToMove = chessptr->figures_to_move();
 	for(unsigned int i=0; i<figuresToMove.size(); i++){
 		vector <Pos> figAllPossibleMoves = chessptr->poss_moves(figuresToMove.at(i));
-#ifdef DEBUG
 		std::cout << "i: " << i << " SIZE OF figAllPossibleMoves: " << figAllPossibleMoves.size() << std::endl;
-#endif
 		for(unsigned int j=0; j<figAllPossibleMoves.size(); j++){
-#ifdef DEBUG
 			std::cout << "j: " << j << std::endl;
-#endif
 			Move move(figuresToMove.at(i), figAllPossibleMoves.at(j));
-#ifdef DEBUG
 			std::cout << "MOVE CREATED" << std::endl;
-#endif
 			allPossibleMoves.push_back(move);
 		}	
 	}
@@ -82,9 +76,7 @@ void AI::setChosenMove(){
 	setClassifierSeparationLine(chessptr->Board);
 	int highScore = 0;
 	vector <Move> chosenMoves;
-#ifdef DEBUG
 	std::cout << "IN setChosenMove()" << std::endl;
-#endif
 	if(!allPossibleMoves.empty()){
 		for(unsigned int i=0; i<allPossibleMoves.size(); i++){
 			double score = moveScore(chessptr->Board, allPossibleMoves.at(i));
@@ -97,42 +89,32 @@ void AI::setChosenMove(){
 				chosenMoves.push_back(allPossibleMoves.at(i));
 		}			
 	}
-#ifdef DEBUG
 	std::cout << "GATHERED TIED CHOSEN MOVES" << std::endl;
-#endif
 	if(chosenMoves.size() == 1){
 		chosenMove = chosenMoves.at(0);
 		nextMoveSet = true;
 	} else {
 		int _highScore = 0;
 		Move _chosenMove;
-#ifdef DEBUG
 		for(unsigned int i=0; i<chosenMoves.size(); i++){
 			chosenMoves.at(i).printMove();
 		}
-#endif
 		for(unsigned int i=0; i<chosenMoves.size(); i++){
 			int score = setChosenMoveLayer(2, chessptr->Board, chosenMoves.at(i));
-#ifdef DEBUG
 			std::cout << "MOVE SCORED" << std::endl;
-#endif
 			if(score > _highScore || _highScore == 0){
 				_highScore = score;
 				_chosenMove = chosenMoves.at(i);
 			}
 		}
-#ifdef DEBUG
 		std::cout << "_chosenMove SET" << std::endl;
-#endif
 		nextMoveSet = true;
 		chosenMove = _chosenMove;
 	}
 }
 
 double AI::setChosenMoveLayer(int layer, Figure * Board[], Move &move){
-#ifdef DEBUG
 	std::cout << "IN LAYER: " << layer << std::endl;
-#endif
 	vector <moveWithScore> movesWithScore;
 	Chess * hypotheticalChess = new Chess();
 	for(int i=0; i<99; i++){
@@ -144,37 +126,26 @@ double AI::setChosenMoveLayer(int layer, Figure * Board[], Move &move){
 		else
 			hypotheticalChess->Board[i] = NULL;
 	}
-#ifdef DEBUG
 	for(int i=0; i<99; i++){
 		if(hypotheticalChess->Board[i] != NULL){
 			std::cout << i << " | " << hypotheticalChess->Board[i]->no << std::endl;
 		}
 	}
-#endif
 	hypotheticalChess->fillSetFromBoard();
 	setClassifierSeparationLine(hypotheticalChess->Board);
-#ifdef DEBUG
 	std::cout << "PASSING hypotheticalChess BOARD AND SET LOADED" << std::endl;
-#endif
 	hypotheticalChess->curr_color = (layer % 2) ? chessptr->curr_color : !chessptr->curr_color;
 	hypotheticalChess->move(move.oldPos, move.newPos);
 	vector <Pos> hypotheticalFiguresToMove = hypotheticalChess->figures_to_move();
-#ifdef DEBUG
 	std::cout << "SIZE OF hypotheticalFiguresToMove: " << hypotheticalFiguresToMove.size() << std::endl;
 	std::cout << "PASSING hypotheticalFiguresToMove ALLOCATION" << std::endl;
-#endif
 	vector <Pos> allPossibleHypotheticalMoves;
 	for(unsigned int i=0; i<hypotheticalFiguresToMove.size(); i++){
 		vector <Pos> hypotheticalFigureMoves;
-#ifdef DEBUG
 		std::cout << "i= " << i << std::endl;
 		std::cout << "Position X: " << hypotheticalFiguresToMove.at(i).x() << " Y: " << hypotheticalFiguresToMove.at(i).y() << std::endl;
-#endif
 		int index = hypotheticalFiguresToMove.at(i).index();
-#ifdef DEBUG
 		std::cout << "LOOKUP INDEX: " << index << std::endl;
-#endif
-#ifdef SUPER_DEBUG
 		for(int j=0; j<99; j++){
 			if(!j%8&1) std::cout << std::endl;
 			if(hypotheticalChess->Board[i] != NULL)
@@ -182,17 +153,12 @@ double AI::setChosenMoveLayer(int layer, Figure * Board[], Move &move){
 			else
 				std::cout << j << " IS NULL ";
 		}
-#endif
 		hypotheticalFigureMoves = hypotheticalChess->Board[index]->possible_moves(hypotheticalChess->Board);
-#ifdef DEBUG
 		std::cout << "GATHERED hypotheticalFigureMoves" << std::endl;
-#endif
 		for(unsigned int j=0; j<hypotheticalFigureMoves.size(); j++)
 			allPossibleHypotheticalMoves.push_back(hypotheticalFigureMoves.at(j));
 	}
-#ifdef DEBUG
 	std::cout << "GATHERED allPossibleHypotheticalMoves" << std::endl;
-#endif
 	for(unsigned int i=0; i<allPossibleHypotheticalMoves.size(); i++){
 		Move _move(move.newPos, allPossibleHypotheticalMoves.at(i));
 		int score = moveScore(hypotheticalChess->Board, _move, true);
@@ -207,23 +173,17 @@ double AI::setChosenMoveLayer(int layer, Figure * Board[], Move &move){
 			averageScore += movesWithScore.at(i).score;
 			scoresCount += 1;
 		}
-#ifdef DEBUG
 		std::cout << "FINISHING FINAL LAYER: " << layer << std::endl;
-#endif
 		return averageScore / scoresCount;
 	} else {
 		double averageScore = 0;
 		int scoresCount = 0;		
 		for(unsigned int i=0; i<movesWithScore.size(); i++){
-#ifdef DEBUG
 			std::cout << "IN LAYER: " << layer << " AT INDEX: " << i << " WITH movesWithScore.size() = " << movesWithScore.size() << std::endl;
-#endif
 			averageScore += setChosenMoveLayer(layer+1, hypotheticalChess->Board, movesWithScore.at(i).move); //Spawn next layers.  Dangerous recursive function.
 			scoresCount += 1;
 		}
-#ifdef DEBUG
 		std::cout << "RETURNING FINAL RESULT" << std::endl;
-#endif
 		return averageScore / scoresCount;
 	}
 }
@@ -265,9 +225,7 @@ void AI::setClassifierSeparationLine(Figure * Board[]){
 		separationLine[1] += totalSquareDistance__ - __totalSquareDistance <= 0 ? LEARNING_RATE : (-LEARNING_RATE);
 		if(iterations == MAX_CLASSIFIER_ITERATIONS){
 			memcpy(&this->separationLine, &separationLine, 2*sizeof(double));
-#ifdef DEBUG
 			std::cout << "SEPARATION LINE: y = " << this->separationLine[0] << "x + " << this->separationLine[1] << std::endl;
-#endif
 			break;
 		}
 		iterations += 1;
@@ -276,17 +234,11 @@ void AI::setClassifierSeparationLine(Figure * Board[]){
 
 
 bool AI::makeNextMove(){
-#ifdef DEBUG
 	std::cout << "CHECKPOINT PASSED inside makeNextMove" << std::endl;
-#endif
 	setAllPossibleMoves();
-#ifdef DEBUG
 	std::cout << "CHECKPOINT PASSED setAllPossibleMoves" << std::endl;
-#endif
 	setChosenMove();
-#ifdef DEBUG
 	std::cout << "CHECKPOINT PASSED setChosenMove" << std::endl;
-#endif
 	if(nextMoveSet){
 		int status = chessptr->move(chosenMove.oldPos, chosenMove.newPos);
 		if(status&1){

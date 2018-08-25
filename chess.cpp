@@ -120,9 +120,7 @@ void Chess::saveHistory(){
 }
 
 void Chess::fileDumpHistory(bool victor){
-#ifdef DEBUG
 	std::cout << "IN Chess::fileDumpHistory()" << std::endl;
-#endif
     time_t timestamp; time(&timestamp);
     string prefixstring ("History_");
     std::stringstream ss; ss << timestamp; string timestring = ss.str();
@@ -131,22 +129,14 @@ void Chess::fileDumpHistory(bool victor){
     strcpy(filename, _filename.c_str());
     std::ofstream outstream(filename);
 	outstream << "{\"Victor\":" << victor << "}" << std::endl;
-#ifdef DEBUG
 	std::cout << "HISTORY LENGTH: " << History.size() << std::endl;
-#endif
 	while(!History.empty()){
-#ifdef DEBUG
 		std::cout << "DUMPING QUEUE" << std::endl;
-#endif
 		queue <Figure> board = History.front();
-#ifdef DEBUG
 		std::cout << "QUEUE LENGTH: " << board.size() << std::endl;
-#endif
 		break;
 		while(!board.empty()){
-#ifdef DEBUG
 			std::cout << "DUMPING BOARD QUEUE" << std::endl;
-#endif
 			Figure cell = board.front();
 			outstream << (cell.color == 1 ? "W" : "B") << "|" << cell.no << ",";
 		}
@@ -157,9 +147,7 @@ void Chess::fileDumpHistory(bool victor){
 }
 
 int Chess::move(Pos oldPos, Pos newPos){ //Change in position allows lookup for figures.
-#ifdef DEBUG
 	std::cout << "MOVING FROM (" << oldPos.x() << "," << oldPos.y() << ") TO (" << newPos.x() << "," << newPos.y() << ")" << std::endl;
-#endif
     saveHistory();
     Figure *tmp = Board[oldPos.index()]; //Grab figure pointer
     if(!(tmp->move(newPos))) return 0; //Should never be true.  Updates tmp position.

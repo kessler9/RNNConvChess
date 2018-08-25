@@ -85,36 +85,26 @@ vector<Pos> Pawn::possible_moves(Figure *Board[]){
     vector <Pos> PossMoves;
 	Pos test_Pos;
 	if(hasNotMoved && Board[curPos.index()+1*direction] == NULL){
-#ifdef PAWN_DEBUG
 		std::cout << "PAWN HAS NOT MOVED AND IT HAS NOTHING IN FRONT OF IT" << std::endl;
-#endif
     	test_Pos.set(curPos.x(), curPos.y()+2*direction);
 		if(ifPossMove(Board, color, test_Pos, false, true) == 1){
-#ifdef PAWN_DEBUG
 		std::cout << "PAWN CAN MOVE TWO STEPS FORWARD" << std::endl;
-#endif
 			PossMoves.push_back(test_Pos);
 		}
 	}
 	test_Pos.set(curPos.x(), curPos.y()+1*direction);
 	if(ifPossMove(Board, color, test_Pos, false, true) == 1){
-#ifdef PAWN_DEBUG
 		std::cout << "PAWN CAN MOVE ONE STEP FORWARD" << std::endl;
-#endif
 		PossMoves.push_back(test_Pos);
 	}
 	test_Pos.set(curPos.x()-1, curPos.y()+1*direction);
 	if(ifPossMove(Board, color, test_Pos, true, false) == 1){
-#ifdef PAWN_DEBUG
 		std::cout << "PAWN CAN MOVE DIAGONALLY ONE STEP TO KILL" << std::endl;
-#endif
 		PossMoves.push_back(test_Pos);
 	}
 	test_Pos.set(curPos.x()+1, curPos.y()+1*direction);
 	if(ifPossMove(Board, color, test_Pos, true, false) == 1){
-#ifdef PAWN_DEBUG
 		std::cout << "PAWN CAN MOVE DIAGONALLY ONE STEP TO KILL" << std::endl;
-#endif
 		PossMoves.push_back(test_Pos);
 	}	
     return PossMoves;
